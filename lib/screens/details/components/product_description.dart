@@ -20,6 +20,13 @@ class ProductDescription extends StatefulWidget {
 
 class _ProductDescriptionState extends State<ProductDescription> {
   bool isFavorite = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isFavorite = widget.product.isFavourite;
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,6 +45,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
             onTap: () {
               setState(() {
                 isFavorite = !isFavorite;
+                widget.product.isFavourite = isFavorite;
               });
             },
             child: Container(

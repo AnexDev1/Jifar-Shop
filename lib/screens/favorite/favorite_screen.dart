@@ -9,6 +9,7 @@ class FavoriteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final favoriteProducts = demoProducts.where((product) => product.isFavourite).toList();
     return SafeArea(
       child: Column(
         children: [
@@ -20,7 +21,7 @@ class FavoriteScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: GridView.builder(
-                itemCount: demoProducts.length,
+                itemCount: favoriteProducts.length,
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200,
                   childAspectRatio: 0.7,
