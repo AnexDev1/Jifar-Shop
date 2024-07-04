@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/components/product_card.dart';
 import 'package:shop_app/models/Product.dart';
+import 'package:shop_app/screens/add_product/add_product_screen.dart';
 
 import '../details/details_screen.dart';
 
@@ -14,6 +15,11 @@ class ProductsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Products"),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen()));
+          }, icon: const Icon(Icons.add)),
+        ],
       ),
       body: SafeArea(
         child: Padding(
