@@ -1,8 +1,10 @@
-// lib/screens/add_product/add_product_screen.dart
-
 import 'package:flutter/material.dart';
-import 'package:shop_app/models/Product.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
+import 'package:shop_app/models/Product.dart';
+import 'package:shop_app/providers/product_provider.dart';
+import 'dart:io';
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
 
@@ -15,7 +17,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
-  final _imageController = TextEditingController();
+  String? _imagePath;
+
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imagePath = pickedFile.path;
+      });
+    }
+  }
 
   void _addProduct() {
     if (_formKey.currentState!.validate()) {
@@ -24,16 +35,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
         title: _titleController.text,
         description: _descriptionController.text,
         price: double.parse(_priceController.text),
-        images: [_imageController.text],
+        images: [_imagePath ?? ''],
         colors: [Colors.white],
         rating: 0.0,
         isFavourite: false,
         isPopular: false,
       );
 
-      setState(() {
-        demoProducts.add(newProduct);
-      });
+      Provider.of<ProductProvider>(context, listen: false).addProduct(newProduct);
 
       Navigator.pop(context);
     }
@@ -44,6 +53,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add New Product'),
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -62,7 +72,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 },
               ),
               const SizedBox(height: 10),
-
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Description'),
@@ -74,7 +83,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 },
               ),
               const SizedBox(height: 10),
-
               TextFormField(
                 controller: _priceController,
                 decoration: const InputDecoration(labelText: 'Price'),
@@ -87,17 +95,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 },
               ),
               const SizedBox(height: 10),
-
-              TextFormField(
-                controller: _imageController,
-                decoration: const InputDecoration(labelText: 'Image URL'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an image URL';
-                  }
-                  return null;
-                },
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: const Text('Pick Image'),
               ),
+              if (_imagePath != null)
+                Image.file(
+                  File(_imagePath!),
+                  height: 100,
+                  width: 100,
+                ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _addProduct,

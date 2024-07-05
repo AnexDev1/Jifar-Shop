@@ -23,7 +23,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     isFavorite = widget.product.isFavourite;
   }

@@ -1,44 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/models/Cart.dart';
+import 'dart:io';
 
-import '../../../constants.dart';
-import '../../../models/Cart.dart';
+// Define the kPrimaryColor constant
+const kPrimaryColor = Color(0xFFFF7643);
 
 class CartCard extends StatelessWidget {
+  final CartItem cart;
+
   const CartCard({
     Key? key,
     required this.cart,
   }) : super(key: key);
 
-  final CartItem cart;
-
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-          width: 88,
-          child: AspectRatio(
-            aspectRatio: 0.88,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF5F6F9),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Image.asset(cart.product.images[0]),
-            ),
+        if (cart.product.images.isNotEmpty)
+          Container(
+            height: 100, // Set a fixed height for the image container
+            width: 100,  // Set a fixed width for the image container
+            child: cart.product.images[0].startsWith('http')
+                ? Image.network(cart.product.images[0], fit: BoxFit.cover)
+                : Image.file(File(cart.product.images[0]), fit: BoxFit.cover),
           ),
-        ),
         const SizedBox(width: 20),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               cart.product.title,
-              style: const TextStyle(color: Colors.black, fontSize: 16),
-              maxLines: 2,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
             Text.rich(
               TextSpan(
                 text: "\$${cart.product.price}",
@@ -52,7 +46,7 @@ class CartCard extends StatelessWidget {
               ),
             )
           ],
-        )
+        ),
       ],
     );
   }

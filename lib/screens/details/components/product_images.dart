@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 import '../../../constants.dart';
 import '../../../models/Product.dart';
@@ -17,6 +18,7 @@ class ProductImages extends StatefulWidget {
 
 class _ProductImagesState extends State<ProductImages> {
   int selectedImage = 0;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,16 +27,17 @@ class _ProductImagesState extends State<ProductImages> {
           width: 238,
           child: AspectRatio(
             aspectRatio: 1,
-            child: Image.asset(widget.product.images[selectedImage]),
+            child: widget.product.images[selectedImage].startsWith('http')
+                ? Image.network(widget.product.images[selectedImage], fit: BoxFit.cover)
+                : Image.file(File(widget.product.images[selectedImage]), fit: BoxFit.cover),
           ),
         ),
-        // SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ...List.generate(
               widget.product.images.length,
-              (index) => SmallProductImage(
+                  (index) => SmallProductImage(
                 isSelected: index == selectedImage,
                 press: () {
                   setState(() {
@@ -52,11 +55,12 @@ class _ProductImagesState extends State<ProductImages> {
 }
 
 class SmallProductImage extends StatefulWidget {
-  const SmallProductImage(
-      {super.key,
-      required this.isSelected,
-      required this.press,
-      required this.image});
+  const SmallProductImage({
+    Key? key,
+    required this.isSelected,
+    required this.press,
+    required this.image,
+  }) : super(key: key);
 
   final bool isSelected;
   final VoidCallback press;
@@ -83,7 +87,9 @@ class _SmallProductImageState extends State<SmallProductImage> {
           border: Border.all(
               color: kPrimaryColor.withOpacity(widget.isSelected ? 1 : 0)),
         ),
-        child: Image.asset(widget.image),
+        child: widget.image.startsWith('http')
+            ? Image.network(widget.image, fit: BoxFit.cover)
+            : Image.file(File(widget.image), fit: BoxFit.cover),
       ),
     );
   }

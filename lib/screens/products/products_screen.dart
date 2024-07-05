@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shop_app/components/product_card.dart';
 import 'package:shop_app/models/Product.dart';
 import 'package:shop_app/screens/add_product/add_product_screen.dart';
-
+import 'package:shop_app/providers/product_provider.dart';
+import 'package:provider/provider.dart';
 import '../details/details_screen.dart';
 
 class ProductsScreen extends StatelessWidget {
@@ -24,24 +25,29 @@ class ProductsScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: GridView.builder(
-            itemCount: demoProducts.length,
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              childAspectRatio: 0.7,
-              mainAxisSpacing: 20,
-              crossAxisSpacing: 16,
-            ),
-            itemBuilder: (context, index) => ProductCard(
-              product: demoProducts[index],
-              onPress: () => Navigator.pushNamed(
-                context,
-                DetailsScreen.routeName,
-                arguments:
-                    ProductDetailsArguments(product: demoProducts[index]),
-              ),
-            ),
+          child : Consumer<ProductProvider>(
+            builder: (context, productProvider, child) {
+              return GridView.builder(
+                itemCount: productProvider.products.length,
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  childAspectRatio: 0.7,
+                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 16,
+                ),
+                itemBuilder: (context, index) => ProductCard(
+                  product: productProvider.products[index],
+                  onPress: () => Navigator.pushNamed(
+                    context,
+                    DetailsScreen.routeName,
+                    arguments:
+                    ProductDetailsArguments(product: productProvider.products[index]),
+                  ),
+                ),
+              );
+            },
           ),
+
         ),
       ),
     );
